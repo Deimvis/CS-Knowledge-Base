@@ -39,9 +39,45 @@ _Main reasons to build distributed systems are: Parallelism, Fault Tolerance, Bu
   * Reliable
   * Unreliable
 
-### RPC
+## Direct Communication
 
-* RPC (Remote Procedure Call) — event in which process causes a procedure to execute in a different address space (commonly on another computer on a shared network), which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction
+### API
+
+* API (Application Programming Interface) — a type of software interface, offering a service to other pieces of software
+
+#### REST API
+
+* REST API (Representational State Transfer API) — a software architectural style that was created to guide the design and development of the architecture for the World Wide Web
+* Benefits
+  * Scalable
+  * Uniform Interface
+  * Cachable
+  * Flexible (to change inner implementation)
+  * Compatible
+  * Simple to use
+* Drawbacks
+  * Lack of state
+  * Security (REST doesn't impose security)
+* Best Practices
+  * Organized around resources ('/orders' + POST instead of '/view-order' or '/create-order')
+  * Entities are grouped into collecitons ('/orders' instead of '/order/all')
+  * Parametrized URLs for identity ('/orders/{order_id}' instead of '/orders?order_id=1')
+  * Keep URLs simple ('/orders' instead of '/user/{user_id}/orders')
+  * Use query params for additional options or metadata (sort, limit ,etc)
+  * Use hyphens in URLs instead of underscores or anything else ('/video-content' instead of 'video_content', 'videocontent')
+
+* Versioning
+
+  | Method           | Example                 | Cache-Friendly | RESTFUL |
+  | ---------------- | ----------------------- | -------------- | ------- |
+  | via URI          | '/v2/...                | YES            | NO      |
+  | via query params | ...?version=2           | YES            | NO      |
+  | via headers      | api-verison=2           | NO             | YES     |
+  | via media type   | application/xxx.v2+json | NO             | YES     |
+
+#### RPC API
+
+* RPC (Remote Procedure Call) — event when process causes a procedure to execute in a different address space (commonly on another computer on a shared network), which is coded as if it were a normal (local) procedure call, without the programmer explicitly coding the details for the remote interaction
 
 ## Indirect communication
 
@@ -164,6 +200,152 @@ _Main reasons to build distributed systems are: Parallelism, Fault Tolerance, Bu
     * Gearman, Redis
   * Cloud Services
     * Amazon Simple Queue Service, Yandex Message Queue
+
+#### AMQP
+
+* AMQP (Advanced Mesaged Queuing Protocol) — an open standard application layer protocol for message-oriented middleware
+* Features
+  * Targeted QoS
+  * Persistence
+  * Multiple consumers
+  * High speed
+
+##### Specifications
+
+[AMQP Specifications](https://www.rabbitmq.com/protocol.html)
+
+###### Frame
+
+* Types
+  * Method frame
+  * Content Header frame
+  * Body frame
+  * Heartbeat frame
+
+* Structure
+
+  1. Frame Type
+
+  2. Channel #
+
+  3. Size
+
+  4. Payload
+     1. Class
+     2. Method
+
+  5. End-byte marker
+
+#### Apache Kafka
+
+* Apache Kafka — a distributed event store and stream-processing platform
+
+* Benefits
+
+  * Scalability (using partitions)
+  * Low Latency (upto 10ms)
+  * High Throughput (>1000 messages/s)
+  * Fault Tolerance (messages are stored on disk)
+  * Durability (replication feature)
+  * Simple Integration (each consumer/producer should be aware of Kafka and not about other participants of the system)
+  * Batch Approach, Can Work as ETL
+
+* Drawbacks
+
+  * No complete set of monitoring and managing tools
+  * No support for balancing data across nodes (uneven record distribution)
+  * No inflight modification of messages
+  * No point-point or request/reply paradigms
+
+* Features
+
+  * Streams API (processing data inside kafka, e.g. grouping - group by)
+  * Consumer's offsets for each partition are stored in special topic called Consumer offset
+  * Retention Policy (globally or per topic)
+  * Delivery Guarantees (At most once, At lease once, Exactly once; Exactly once is actually impossible, but with this guarantee you process each message only once)
+  * Consumer groups + auto load balancing + auto rebalance (it's a single consumer for Kafka but having multiple nodes to distribute load, so Kafka assigns different partitions to different topics)
+  * Compacted topics (for each key store only last received value)
+  * Security features (optional)
+
+* Problems
+
+  * Uneven record distribution (Kakfa doesn't aware of partitions' sizes, so you need to balance data by yourself)
+
+    [Challenge of uneven record distribution](https://aiven.io/developer/balance-data-across-kafka-partitions#challenge-of-uneven-record-distribution)
+
+    * Solution:
+      * Default partitioning: change settings for "linger time" and a maximum size of the batch
+      * Partitioning by key: no off-the-shelf approach
+
+##### Architecture
+
+<img src="images/kafka_architecture.png" style="zoom:70%">
+
+##### Stream Processing
+
+Approahces from the most simple to the mose flexible
+
+1. KSQL (ksqlDB)
+2. Kafka Streams API
+3. Producer/Consumer
+
+#### RabbitMQ
+
+* RabbitMQ — an open-source message-broker software (sometimes called message-oriented middleware) that originally implemented the Advanced Message Queuing Protocol (AMQP) and has since been extended with a plug-in architecture to support Streaming Text Oriented Message Protocol (STOMP), MQ Telemetry Transport (MQTT), and other protocols
+* Benefits
+  * Flexibility in Messaging Patterns and Routing
+  * Reliability
+  * Durability
+  * Scalability
+  * Simplicity
+  * Security
+  * Monitoring UI
+
+* Drawbacks
+  * Higher Latency
+  * Resource Intensity
+  * Difficult to Scale, Complex Configuration (for cluster)
+  * Difficult to Preserve Message Ordering Guarantees
+
+* Features
+  * Supports request/reply paradigm
+  * Flexible routing (exchange to exchange routing)
+
+
+##### Architecture
+
+<img src="images/rabbitmq_architecture.png">
+
+##### Exchange
+
+* Exchange — RabbitMQ's component that receives messages from producers and pushes them to corresponding queues
+
+* Types
+  * Default (uses queue name)
+  * Direct (uses exact match)
+  * Topic (uses wildcards)
+  * Consistent Hashing (distributes evenly)
+  * Headers (uses headers)
+  * Alternate (used for unrouted messages from previous exchange)
+  * Dead letter (used for "dead-lettered" messages)
+
+#### Apache Kafka vs RabbitMQ
+
+| Aspect               | Apache Kafka                                                 | RabbitMQ                                         |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| **Type**             | Distributed Streaming Platform                               | Message Broker                                   |
+| **Message Model**    | Publish-Subscribe, Log Storage                               | Message Queues, Publish-Subscribe, Request/Reply |
+| **Performance**      | High throughput and low latency                              | Good throughput, may have higher latency         |
+| **Persistence**      | Supports disk-based retention for messages                   | Messages can be persisted to disk                |
+| **Scalability**      | Designed for horizontal scalability                          | Scales horizontally, but may require more nodes  |
+| **Protocol Support** | Supports Kafka Protocol (binary)                             | Supports multiple protocols (AMQP, MQTT, etc.)   |
+| **Security**         | SSL/TLS, SASL, ACLs, Integration with external authentication providers | SSL/TLS, LDAP, OAuth, Custom Plugins             |
+| **Management UI**    | Third-party tools like Confluent Control Center              | Management UI available                          |
+| **Ecosystem**        | Kafka Streams, Connect, ksqlDB                               | Wide range of plugins and extensions             |
+| **Fault Tolerance**  | Data replication, leader-follower model                      | Mirroring, HA queues, Clustering                 |
+| **Monitoring**       | JMX metrics, third-party monitoring tools                    | Management and monitoring plugins available      |
+
+
 
 ### Publish-Subscribe
 
@@ -916,9 +1098,9 @@ _aka optimistic replication_
 
 #### Overall
 
-<img src="images/consistency_models_comparison.png" style="zoom:70%">
+<img src="images/consistency_models_comparison.png" style="zoom:50%">
 
-<img src="images/consistency_models_comparison_2.png" style="zoom:70%">
+<img src="images/consistency_models_comparison_2.png" style="zoom:50%">
 
 #### Linearizability vs Serializability
 
@@ -957,8 +1139,6 @@ Linearizability cares about time. Sequential consistency cares about program ord
   * Vector clocks
   * Version vectors
   * Matrix clocks
-
-
 
 <div style="page-break-after: always;"></div>
 
@@ -999,6 +1179,153 @@ _aka two-phase commit protocol_
   * Requires stable storage at each node with write-ahead log
     * Stable storage — storage that guarantees atomicity for any given write operation and allows software to be written that is robust against some hardware and power failures
   * Network communication should support rerouting
+
+## Paxos
+
+* Paxos — a family of protocols for solving consensus in a network of unreliable or failible processes
+
+* Benefits
+  * Throughput (~1000 tx/s)
+  * Latency (~1s/tx)
+  * Energy usage
+  * Scalable
+  * Decentralized
+  * Flexible (can be used in various distributed systems)
+  * Industry proven
+* Drawbacks
+  * Difficult to implement
+  * Lot of Communication (require many rounds of communication)
+* Assumptions
+  * Processors
+    * Operate at arbitrary speed
+    * May experience failures
+    * May re-join the protocol after failures (in case of stable storage)
+    * Do not collude, lie, etc (no byzantine failures)
+  * Network
+    * Processors can send messages to each other
+    * Messages are sent asynchronously and may take arbitrary time to deliver
+    * Messages may be lost, reordered, duplicated
+    * Messages are delivered without corruption (no byzantine failures)
+
+### Byzantine Paxos
+
+* Byzantine Paxos — extension of Paxos which supports byzantine failures (arbitrary failures of the participants , including lying, fabrication os messages, collusion with other participants, selective non-participation, etc)
+
+## Raft
+
+* Raft — a consensus algorithm designed as an alternative to the Paxos family of algorithms
+
+* Benefits
+  * Throughput (~1000 tx/s)
+  * Latency (~1s/tx)
+  * Energy usage
+  * Simple implementation
+  * Single Round of Communication
+  * Clear Leader (reduces chances of inconsistencies)
+  * Flexible (modular design)
+* Drawbacks
+  * Scalability (limited)
+  * Performance Overhead
+  * Leader bottleneck
+  * No liveness guarantee (if leader becomes unavailable)
+
+## Blockchain
+
+#### Proof of Work
+
+* Proof of Work (PoW) — a consensus algorithm which is based on the proving that a certain amount of a specific computational effort has been expended
+
+* Benefits
+  * Public
+  * Relatively Safe
+  * Decentralized
+* Drawbacks
+  * Throughput (~3-7 tx/s)
+  * Latency (~3600s/tx)
+  * Energy usage (especially bitcoin)
+* Implementations
+  * Bitcoin
+
+## Byzantine Fault Tolerance
+
+* Byzantine fault — condition of a computer system, particularly distributed computing systems, where components may fail and there is imperfect information on whether a component has failed
+
+### Algorithm
+
+#### Properties
+
+* $f$ – number of traitors
+
+* $n$ – number of nodes
+
+* $n \ge 3f+1$
+* $f+1$ rounds
+* $O(N^{f+1})$ messages
+* Susceptible to attack to certain nodes (e.g. DoS)
+
+### Algorithm (with signatures)
+
+#### Properties
+
+* $f$ – number of traitors
+
+* $n$ – number of nodes
+
+* $n \ge f+2$
+* $f+1$ rounds
+* $O(N^2)$ messages
+
+### Practical Byzantine Fault Tolerance
+
+#### Properties
+
+* $f$ – number of traitors
+
+* $n$ – number of nodes
+
+* $n \ge 3f+1$
+  * If client receives $n-f$ responses then in an assumption of $f$ slow replicas and $f$ traitors' responses to make the decision of majority we need number of trusted responses $(n-f) - f$ be more than number of traitors $f$, so $n \ge 3f$
+* $f+1$ rounds
+* $O(N^2)$ messages
+
+#### Phases
+
+_case of 4 generals_
+
+1. Pre-prepare
+   * The leader is responsible for receiving the Byzantine cilent's attack/retreat command (request)
+   * The leader is responsible for initiating the proposal. The said proposal sent to the replicas shall include the message content (attack or retreat), the view number (correponding uniquely to the leader) and a sequence number, which can be described as the numeral order of the action being undertaken
+   * The leader sends the "pre-prepare" messages with his signature to other validators via the messenger (communication protocol)
+
+<img src="images/pbft_preprepare_phase.webp" style="zoom:70%">
+
+2. Prepare
+   * After each replica receives the "pre-prepare" message, it can either accept or reject the leader's proposal. If the replica accepts the leader's proposal, it will send a "prepare" message with its own signature to all the other replicas (including the leader). If it rejects, it will not send any message
+   * The general who issued the "prepare" message enters the "prepare" phase
+   * If a replica receives more than $2f+1$ "prepare" messages, it enters the prepared state. The collection of these prepare messages is collectively referred to as the "prepared certificate"
+
+<img src="images/pbft_prepare_phase.webp" style="zoom:70%">
+
+3. Commit
+   * If the "prepared" general decides to commit, it will send a "commit" message with the signature to all the generals (replicas). If it decides not to execute, no message is sent
+   * The general who issued the "commit" message enters the "commit" phase
+   * If the generals receive more than $2f+1$ "commit" messages, the message object is executed, which also means that the proposal has reached a consensus
+   * After the execution of the message, the general enters the "commited" state and returns the execution result to the Byzantine client
+   * After the reply has been sent, the replicas wait for the next request
+
+#### Leader Replacement
+
+* Each general starts a timer after receiving the "prepare" message, a mechanism that is turned off after switching to the "committed" state
+* If the message is not executed within a given maximum amount of time T after the timer has been started, the generals broadcast a "view change" message. This message shall include the new view (current view number +1), and a number of other details
+* If the leader fails to broadcast the client's request and start the "prepare" phase, each honest replica will eventually send a view change message upon expiration of the timer
+* Upon receiving more than $2f+1$ "view change" messages, the new leader can broadcast a "new view" message to all the replicas. This message shall include the new view number, a proof that the previous request has not been executed, a "prepare" message, and a number of other components
+* After receiving the "new view" message, each replica shall follow the three steps of request execution described above, once the new leader broadcasts the client's request
+* The new leader is now responsible for broadcasting requests from the Byzantine client
+
+### Applications
+
+* Permissioned (private) blockchains (Hyperledger Sawtooth)
+* Protocols (Zyzzyva, Tendermint, HotStuff, LibraBFT)
 
 
 
@@ -1101,95 +1428,6 @@ _aka two-phase commit protocol_
 * TTL of secrets should be limited
 * Number of critically important components should be minimized
 
-
-
-<div style="page-break-after: always;"></div>
-
-
-
-# Byzantine Fault Tolerance
-
-* Byzantine fault — condition of a computer system, particularly distributed computing systems, where components may fail and there is imperfect information on whether a component has failed
-
-## Algorithm
-
-### Properties
-
-* $f$ – number of traitors
-
-* $n$ – number of nodes
-
-* $n \ge 3f+1$
-* $f+1$ rounds
-* $O(N^{f+1})$ messages
-* Susceptible to attack to certain nodes (e.g. DoS)
-
-## Algorithm (with signatures)
-
-### Properties
-
-* $f$ – number of traitors
-
-* $n$ – number of nodes
-
-* $n \ge f+2$
-* $f+1$ rounds
-* $O(N^2)$ messages
-
-## Practical Byzantine Fault Tolerance
-
-### Properties
-
-* $f$ – number of traitors
-
-* $n$ – number of nodes
-
-* $n \ge 3f+1$
-  * If client receives $n-f$ responses then in an assumption of $f$ slow replicas and $f$ traitors' responses to make the decision of majority we need number of trusted responses $(n-f) - f$ be more than number of traitors $f$, so $n \ge 3f$
-* $f+1$ rounds
-* $O(N^2)$ messages
-
-### Phases
-
-_case of 4 generals_
-
-1. Pre-prepare
-   * The leader is responsible for receiving the Byzantine cilent's attack/retreat command (request)
-   * The leader is responsible for initiating the proposal. The said proposal sent to the replicas shall include the message content (attack or retreat), the view number (correponding uniquely to the leader) and a sequence number, which can be described as the numeral order of the action being undertaken
-   * The leader sends the "pre-prepare" messages with his signature to other validators via the messenger (communication protocol)
-
-<img src="images/pbft_preprepare_phase.webp" style="zoom:70%">
-
-2. Prepare
-   * After each replica receives the "pre-prepare" message, it can either accept or reject the leader's proposal. If the replica accepts the leader's proposal, it will send a "prepare" message with its own signature to all the other replicas (including the leader). If it rejects, it will not send any message
-   * The general who issued the "prepare" message enters the "prepare" phase
-   * If a replica receives more than $2f+1$ "prepare" messages, it enters the prepared state. The collection of these prepare messages is collectively referred to as the "prepared certificate"
-
-<img src="images/pbft_prepare_phase.webp" style="zoom:70%">
-
-3. Commit
-   * If the "prepared" general decides to commit, it will send a "commit" message with the signature to all the generals (replicas). If it decides not to execute, no message is sent
-   * The general who issued the "commit" message enters the "commit" phase
-   * If the generals receive more than $2f+1$ "commit" messages, the message object is executed, which also means that the proposal has reached a consensus
-   * After the execution of the message, the general enters the "commited" state and returns the execution result to the Byzantine client
-   * After the reply has been sent, the replicas wait for the next request
-
-### Leader Replacement
-
-* Each general starts a timer after receiving the "prepare" message, a mechanism that is turned off after switching to the "committed" state
-* If the message is not executed within a given maximum amount of time T after the timer has been started, the generals broadcast a "view change" message. This message shall include the new view (current view number +1), and a number of other details
-* If the leader fails to broadcast the client's request and start the "prepare" phase, each honest replica will eventually send a view change message upon expiration of the timer
-* Upon receiving more than $2f+1$ "view change" messages, the new leader can broadcast a "new view" message to all the replicas. This message shall include the new view number, a proof that the previous request has not been executed, a "prepare" message, and a number of other components
-* After receiving the "new view" message, each replica shall follow the three steps of request execution described above, once the new leader broadcasts the client's request
-* The new leader is now responsible for broadcasting requests from the Byzantine client
-
-## Applications
-
-* Permissioned (private) blockchains (Hyperledger Sawtooth)
-* Protocols (Zyzzyva, Tendermint, HotStuff, LibraBFT)
-
-
-
 <div style="page-break-after: always;"></div>
 
 
@@ -1223,3 +1461,4 @@ _case of 4 generals_
 * [Distributed Computing Musings | Blog](https://distributed-computing-musings.com/)
 * [Distributed Systems Course | Youtube](https://www.youtube.com/@DistributedSystems)
 * [System Design Primer | GitHub](https://github.com/donnemartin/system-design-primer)
+* [Apache Kafka Fundamental Course](https://www.youtube.com/playlist?list=PLa7VYi0yPIH2PelhRHoFR5iQgflg-y6JA)
