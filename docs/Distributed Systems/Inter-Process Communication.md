@@ -386,4 +386,3 @@ Approahces from the most simple to the mose flexible
   * False Sharing
   * Thrashing
 
-

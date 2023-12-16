@@ -2,7 +2,7 @@
 
 * Data Consistency — property of a system to keep data the same at different places
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/consistency_models.png" style="zoom:70%">
+<img src="images/consistency_models.png" style="zoom:70%">
 
 ## Consistency Models
 
@@ -58,9 +58,9 @@ _aka optimistic replication_
 
 #### Overall
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/consistency_models_comparison.png" style="zoom:50%">
+<img src="images/consistency_models_comparison.png" style="zoom:50%">
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/consistency_models_comparison_2.png" style="zoom:50%">
+<img src="images/consistency_models_comparison_2.png" style="zoom:50%">
 
 #### Linearizability vs Serializability
 

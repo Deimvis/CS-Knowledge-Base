@@ -151,14 +151,14 @@ _case of 4 generals_
    * The leader is responsible for initiating the proposal. The said proposal sent to the replicas shall include the message content (attack or retreat), the view number (correponding uniquely to the leader) and a sequence number, which can be described as the numeral order of the action being undertaken
    * The leader sends the "pre-prepare" messages with his signature to other validators via the messenger (communication protocol)
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/pbft_preprepare_phase.webp" style="zoom:70%">
+<img src="images/pbft_preprepare_phase.webp" style="zoom:70%">
 
 2. Prepare
    * After each replica receives the "pre-prepare" message, it can either accept or reject the leader's proposal. If the replica accepts the leader's proposal, it will send a "prepare" message with its own signature to all the other replicas (including the leader). If it rejects, it will not send any message
    * The general who issued the "prepare" message enters the "prepare" phase
    * If a replica receives more than $2f+1$ "prepare" messages, it enters the prepared state. The collection of these prepare messages is collectively referred to as the "prepared certificate"
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/pbft_prepare_phase.webp" style="zoom:70%">
+<img src="images/pbft_prepare_phase.webp" style="zoom:70%">
 
 3. Commit
    * If the "prepared" general decides to commit, it will send a "commit" message with the signature to all the generals (replicas). If it decides not to execute, no message is sent
@@ -180,5 +180,4 @@ _case of 4 generals_
 
 * Permissioned (private) blockchains (Hyperledger Sawtooth)
 * Protocols (Zyzzyva, Tendermint, HotStuff, LibraBFT)
-
 
