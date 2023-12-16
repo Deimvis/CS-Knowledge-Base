@@ -6,7 +6,7 @@ _**Main reasons to build distributed systems are: Parallelism, Fault Tolerance, 
 
 ## Content
 
-* [Inter-Process Communication](Inter-Process Communication.md)
+* [Inter-Process Communication](Inter-Process%20Communication.md)
 * [Failure Detection](Failure Detection.md)
 * [Naming and Search](Naming and Search.md)
 * [Scaling](Scaling.md)
