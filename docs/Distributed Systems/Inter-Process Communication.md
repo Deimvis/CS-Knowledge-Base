@@ -281,7 +281,7 @@
 
 ##### Architecture
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/kafka_architecture.png" style="zoom:70%">
+<img src="images/kafka_architecture.png" style="zoom:70%">
 
 ##### Stream Processing
 
@@ -316,7 +316,7 @@ Approahces from the most simple to the mose flexible
 
 ##### Architecture
 
-<img src="/Users/dbrusenin/Knowledge/Global/Computer Science/Distributed Systems/images/rabbitmq_architecture.png">
+<img src="images/rabbitmq_architecture.png">
 
 ##### Exchange
 
