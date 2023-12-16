@@ -9,3 +9,6 @@ It is absolutely not the most accurate or comprehensive knowledge base.
 ## Index
 * [Computer Networks](docs/Computer%20Networks/Computer%20Netowrks.md)
 * [Distributed Systems](docs/Distributed%20Systems/Distributed%20Systems.md)
+
+## Future Work
+* Add inter-file links patch on build stage (patch all links to markdown files so they will link to the corresponding html)
