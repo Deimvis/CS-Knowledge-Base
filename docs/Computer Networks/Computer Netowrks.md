@@ -1,3 +1,5 @@
+_Computer Network — a set of computers sharing resources located on or provided by network nodes_
+
 # History of Computer Networks
 
 * 1969 – ARPANET

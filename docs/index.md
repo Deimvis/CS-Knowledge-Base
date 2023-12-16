@@ -6,6 +6,9 @@ It is absolutely not the most accurate or comprehensive knowledge base.
 
 **But** it is a great tool to find a concise, well-structured description, a hint, or a note about some of the Computer Science terms, concepts, algorithms and technologies
 
-## Index
-* [Computer Networks](docs/Computer%20Networks/Computer%20Netowrks.md)
-* [Distributed Systems](docs/Distributed%20Systems/Distributed%20Systems.md)
+## Feel free to contact me
+
+* [Github](https://github.com/Deimvis)
+* [Linkedin](https://www.linkedin.com/in/dmitriy-brusenin/)
+
+## Have a good time :)

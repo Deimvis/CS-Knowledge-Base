@@ -1,0 +1,8 @@
+/* .md-logo {
+    padding: 0 !important;
+    color: black;
+} */
+
+.md-logo > img {
+    height: 1.4rem !important;
+}

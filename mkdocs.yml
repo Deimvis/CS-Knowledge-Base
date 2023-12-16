@@ -1,0 +1,53 @@
+site_name: CS Knowledge Base
+repo_name: Deimvis/CS-Knowledge-Base
+repo_url: https://github.com/Deimvis/CS-Knowledge-Base
+use_directory_urls: false
+theme:
+  name: material
+  logo: .mkdocs/assets/logo.png
+  favicon: .mkdocs/assets/favicon.png
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs  # tabs in header
+    # - navigation.sections
+    # - navigation.top
+    - navigation.top  # scroll to the top
+    - toc.integrate # include table of contents in the left sidebar
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotate
+    - content.code.copy
+  language: en
+
+plugins:
+    - search
+    - awesome-pages
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_css:
+  - .mkdocs/css/style.css
+extra_javascript:
+  - .mkdocs/javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

@@ -1,0 +1,12 @@
+nav:
+    - Distributed Systems.md
+    - Inter-Process Communication.md
+    - Failure Detection.md
+    - Naming and Search.md
+    - Scaling.md
+    - Data Replication.md
+    - Consistency.md
+    - Consensus and Related Problems.md
+    - Security.md
+    - Present and Future of Distributed Systems.md
+    - Additional Resources.md
