@@ -163,7 +163,7 @@ _aka master-master failover_
 
 ## Message Queue
 
-<a href="#Message Queue">Message Queue</a>
+<a href="Inter-Process Communication.md#Message Queue">Message Queue</a>
 
 ## Parallel Computing
 
@@ -209,5 +209,4 @@ _aka master-master failover_
   * Tied requests (same request on multiple servers)
   * Additional replicas for hot data
   * Temporary exclusion of slow machines
-
 
